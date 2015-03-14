@@ -57,8 +57,15 @@ minetest.register_globalstep(function(dtime)
 			if node.name ~= "ignore" then
 				if node.name ~= "default:chest" then
 					if node.name == "air" then
-						minetest.add_node(chests[i].position,{name = "default:chest"})
+						minetest.set_node(chests[i].position,{name = "default:chest"})
 						minetest.log("action","[b_chest]["..i.."] Chest placed at "..chests[i].position.x..", "..chests[i].position.y..", "..chests[i].position.z)
+						if minetest.get_modpath("forceload") ~= nil
+							and (minetest.get_node({chests[i].position.x,chests[i].position.y-1,chests[i].position.z}).name == "air"
+							or minetest.get_node({chests[i].position.x,chests[i].position.y-1,chests[i].position.z}).name == "default:dirt") then
+							-- Enable use of forceload anchors
+							minetest.set_node({chests[i].position.x,chests[i].position.y-1,chests[i].position.z},{name = "forceload:anchor"})
+							minetest.log("action","[b_chest]["..i.."] Forceload anchor placed under chest")
+						end
 					else
 						minetest.log("action","[b_chest]["..i.."] Unable to place chest at "..chests[i].position.x..", "..chests[i].position.y..", "..chests[i].position.z.." : place already in use.")
 						break
